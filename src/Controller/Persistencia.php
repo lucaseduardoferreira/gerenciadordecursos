@@ -22,10 +22,19 @@ class Persistencia implements InterfaceControladorRequisicao
 
     public function processaRequisicao(): void
     {
+
+        $descricao = filter_input(
+            INPUT_POST,
+            'descricao',
+            FILTER_SANITIZE_STRING);
+
+
         $curso = new Curso();
-        $curso->setDescricao($_REQUEST['descricao']);
+        $curso->setDescricao($descricao);
 
         $this->entityManager->persist($curso);
         $this->entityManager->flush();
+
+        header('Location: /listar-cursos', false, 302);
     }
 }

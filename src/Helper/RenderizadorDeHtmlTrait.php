@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Alura\Cursos\Controller;
+namespace Alura\Cursos\Helper;
 
 
-abstract class ControllerComHtml
+trait RenderizadorDeHtmlTrait
 {
     public function renderizaHtml(string $caminhoTemplate, array $dados): string
     {
@@ -12,11 +12,9 @@ abstract class ControllerComHtml
         ob_start();
 
         require __DIR__ . '/../../view/' . $caminhoTemplate;
-
-        $html = ob_get_contents();
-        ob_clean();
+        $html = ob_get_clean();
 
         return $html;
-
     }
+
 }

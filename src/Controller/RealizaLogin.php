@@ -4,10 +4,13 @@ namespace Alura\Cursos\Controller;
 
 
 use Alura\Cursos\Entity\Usuario;
+use Alura\Cursos\Helper\FlashMessageTrait;
 use Alura\Cursos\Infra\EntityManagerCreator;
 
 class RealizaLogin implements InterfaceControladorRequisicao
 {
+    use FlashMessageTrait;
+
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository
      */
@@ -21,14 +24,18 @@ class RealizaLogin implements InterfaceControladorRequisicao
 //...
     public function processaRequisicao(): void
     {
+
+
         $email = filter_input(INPUT_POST,
             'email',
             FILTER_VALIDATE_EMAIL
         );
 
         if (is_null($email) || $email === false) {
-            echo "E-mail inválido";
-            exit();
+            $this->defineMensagem('danger', 'E-mail digitado, não é um e-mail válido');
+            header('Location: /login');
+
+            return;
         }
 
         $senha = filter_input(INPUT_POST,
@@ -39,9 +46,15 @@ class RealizaLogin implements InterfaceControladorRequisicao
             ->findOneBy(['email' => $email]);
 
         if (is_null($usuario) || !$usuario->senhaEstaCorreta($senha)) {
-            echo "E-mail ou senha inválidos";
+            $this->defineMensagem('danger', 'E-mail ou senha inválidos');
+            header('Location: /login');
+
             return;
         }
+
+
+        $_SESSION['logado'] = true;
+        $_SESSION['meu_nome']=
 
         header('Location: /listar-cursos');
 
